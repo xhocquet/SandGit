@@ -4,6 +4,8 @@ Use source control! You'll thank me later.
 
 This is an Editor Widget for [S&box](https://sbox.game/) which allows you to manage git operations in your project.
 
+<img src="https://github.com/user-attachments/assets/b0974af1-7ede-4cf6-b219-684e1653333d" width="300" />
+
 ## Development
 
 I developed this using VSCode. Open the entire directory as a workspace. Included are a few VSCode tasks and a launch configuration to help you get started. Update run-sbox.js AND .vscode/tasks.json to point to your sbox-dev.exe path (usually in your Steam directory).
