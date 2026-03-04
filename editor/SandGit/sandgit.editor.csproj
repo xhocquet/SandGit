@@ -2,6 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyName>sandgit.editor</AssemblyName>
 		<PackageId>sandgit.editor</PackageId>

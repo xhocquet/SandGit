@@ -42,7 +42,7 @@ public static class Reflog {
 			return Array.Empty<string>();
 
 		var result = await Core.GitAsync(
-			new[] { "log", "-g", "--no-abbrev-commit", "--pretty=oneline", "HEAD", "-n", "2500", "--", },
+			GetRecentBranchesArgs(),
 			repository.Path,
 			OperationGetRecentBranches,
 			SuccessExitCodesReflog
@@ -88,10 +88,7 @@ public static class Reflog {
 			return new Dictionary<string, DateTime>();
 
 		var result = await Core.GitAsync(
-			new[] {
-				"reflog", "--date=iso", $"--after=\"{afterDate:O}\"", "--pretty=%H %gd %gs",
-				"--grep-reflog=checkout: moving from .* to .*$", "--",
-			},
+			GetBranchCheckoutsArgs(afterDate),
 			repository.Path,
 			OperationGetBranchCheckouts,
 			SuccessExitCodesReflog
@@ -121,5 +118,18 @@ public static class Reflog {
 		}
 
 		return checkouts;
+	}
+
+	/// <summary>Builds git arguments for get recent branches (log -g). Exposed for testing.</summary>
+	public static string[] GetRecentBranchesArgs() {
+		return new[] { "log", "-g", "--no-abbrev-commit", "--pretty=oneline", "HEAD", "-n", "2500", "--" };
+	}
+
+	/// <summary>Builds git arguments for get branch checkouts (reflog). Exposed for testing.</summary>
+	public static string[] GetBranchCheckoutsArgs(DateTime afterDate) {
+		return new[] {
+			"reflog", "--date=iso", $"--after=\"{afterDate:O}\"", "--pretty=%H %gd %gs",
+			"--grep-reflog=checkout: moving from .* to .*$", "--"
+		};
 	}
 }

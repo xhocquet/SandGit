@@ -29,13 +29,7 @@ public static class Branch {
 		if ( string.IsNullOrEmpty(name) )
 			throw new ArgumentException("Branch name is required.", nameof(name));
 
-		var args = startPoint != null
-			? new[] { "branch", name, startPoint }
-			: new[] { "branch", name };
-
-		if ( noTrack )
-			args = args.Concat(new[] { "--no-track" }).ToArray();
-
+		var args = GetCreateBranchArgs(name, startPoint, noTrack);
 		await Core.GitAsync(args, repository.Path, "createBranch").ConfigureAwait(false);
 	}
 
@@ -46,9 +40,8 @@ public static class Branch {
 		if ( repository == null )
 			throw new ArgumentNullException(nameof(repository));
 
-		var format = "%(refname:short)";
 		var result = await Core.GitAsync(
-			new[] { "branch", $"--format={format}" },
+			GetBranchNamesArgs(),
 			repository.Path,
 			"getBranchNames").ConfigureAwait(false);
 
@@ -79,7 +72,7 @@ public static class Branch {
 
 		try {
 			await Core.GitAsync(
-				new[] { "branch", force == true ? "-M" : "-m", branch.NameWithoutRemote, newName },
+				GetRenameBranchArgs(branch.NameWithoutRemote, newName, force),
 				repository.Path,
 				"renameBranch").ConfigureAwait(false);
 		} catch ( GitException ex ) {
@@ -112,7 +105,7 @@ public static class Branch {
 			throw new ArgumentException("Branch name is required.", nameof(branchName));
 
 		await Core.GitAsync(
-			new[] { "branch", "-D", branchName },
+			GetDeleteLocalBranchArgs(branchName),
 			repository.Path,
 			"deleteLocalBranch").ConfigureAwait(false);
 	}
@@ -134,7 +127,7 @@ public static class Branch {
 		if ( string.IsNullOrEmpty(remoteBranchName) )
 			throw new ArgumentException("Remote branch name is required.", nameof(remoteBranchName));
 
-		var args = new[] { "push", remote.Name, $":{remoteBranchName}" };
+		var args = GetDeleteRemoteBranchArgs(remote.Name, remoteBranchName);
 		var result = await Core.GitAsync(
 			args,
 			repository.Path,
@@ -159,7 +152,7 @@ public static class Branch {
 			throw new ArgumentException("Committish is required.", nameof(commitish));
 
 		var result = await Core.GitAsync(
-			new[] { "branch", $"--points-at={commitish}", "--format=%(refname:short)" },
+			GetBranchesPointedAtArgs(commitish),
 			repository.Path,
 			"branchPointedAt",
 			successExitCodes: new HashSet<int> { 0, 1, 129 }).ConfigureAwait(false);
@@ -189,7 +182,7 @@ public static class Branch {
 
 		var canonicalBranchRef = FormatAsLocalRef(branchName);
 		var result = await Core.GitAsync(
-			new[] { "branch", "--format=%(objectname) %(refname)", "--merged", branchName },
+			GetMergedBranchesArgs(branchName),
 			repository.Path,
 			"mergedBranches").ConfigureAwait(false);
 
@@ -227,10 +220,75 @@ public static class Branch {
 
 	static async Task DeleteRefAsync(Repository repository, string refName) {
 		await Core.GitAsync(
-			new[] { "update-ref", "-d", refName },
+			GetDeleteRefArgs(refName),
 			repository.Path,
 			"deleteRef",
 			successExitCodes: new HashSet<int> { 0, 1 }).ConfigureAwait(false);
+	}
+
+	// --- Args (exposed for testing) ---
+
+	/// <summary>Builds git arguments for creating a branch. Exposed for testing.</summary>
+	public static string[] GetCreateBranchArgs(string name, string? startPoint, bool noTrack = false) {
+		if ( string.IsNullOrEmpty(name) )
+			throw new ArgumentException("Branch name is required.", nameof(name));
+		var args = startPoint != null
+			? new[] { "branch", name, startPoint }
+			: new[] { "branch", name };
+		if ( noTrack )
+			args = args.Concat(new[] { "--no-track" }).ToArray();
+		return args;
+	}
+
+	/// <summary>Builds git arguments for listing branch names. Exposed for testing.</summary>
+	public static string[] GetBranchNamesArgs() {
+		return new[] { "branch", "--format=%(refname:short)" };
+	}
+
+	/// <summary>Builds git arguments for renaming a branch. Exposed for testing.</summary>
+	public static string[] GetRenameBranchArgs(string nameWithoutRemote, string newName, bool? force = null) {
+		if ( string.IsNullOrEmpty(nameWithoutRemote) )
+			throw new ArgumentException("Branch name is required.", nameof(nameWithoutRemote));
+		if ( string.IsNullOrEmpty(newName) )
+			throw new ArgumentException("New branch name is required.", nameof(newName));
+		return new[] { "branch", force == true ? "-M" : "-m", nameWithoutRemote, newName };
+	}
+
+	/// <summary>Builds git arguments for deleting a local branch. Exposed for testing.</summary>
+	public static string[] GetDeleteLocalBranchArgs(string branchName) {
+		if ( string.IsNullOrEmpty(branchName) )
+			throw new ArgumentException("Branch name is required.", nameof(branchName));
+		return new[] { "branch", "-D", branchName };
+	}
+
+	/// <summary>Builds git arguments for deleting a remote branch (push :ref). Exposed for testing.</summary>
+	public static string[] GetDeleteRemoteBranchArgs(string remoteName, string remoteBranchName) {
+		if ( string.IsNullOrEmpty(remoteName) )
+			throw new ArgumentException("Remote name is required.", nameof(remoteName));
+		if ( string.IsNullOrEmpty(remoteBranchName) )
+			throw new ArgumentException("Remote branch name is required.", nameof(remoteBranchName));
+		return new[] { "push", remoteName, $":{remoteBranchName}" };
+	}
+
+	/// <summary>Builds git arguments for listing branches pointed at a committish. Exposed for testing.</summary>
+	public static string[] GetBranchesPointedAtArgs(string commitish) {
+		if ( string.IsNullOrEmpty(commitish) )
+			throw new ArgumentException("Committish is required.", nameof(commitish));
+		return new[] { "branch", $"--points-at={commitish}", "--format=%(refname:short)" };
+	}
+
+	/// <summary>Builds git arguments for listing merged branches. Exposed for testing.</summary>
+	public static string[] GetMergedBranchesArgs(string branchName) {
+		if ( string.IsNullOrEmpty(branchName) )
+			throw new ArgumentException("Branch name is required.", nameof(branchName));
+		return new[] { "branch", "--format=%(objectname) %(refname)", "--merged", branchName };
+	}
+
+	/// <summary>Builds git arguments for deleting a ref. Exposed for testing.</summary>
+	public static string[] GetDeleteRefArgs(string refName) {
+		if ( string.IsNullOrEmpty(refName) )
+			throw new ArgumentException("Ref name is required.", nameof(refName));
+		return new[] { "update-ref", "-d", refName };
 	}
 
 	static bool IsBranchAlreadyExistsError(GitResult result) {

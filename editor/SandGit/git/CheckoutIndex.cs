@@ -35,8 +35,8 @@ public static class CheckoutIndex {
 		if ( paths.Count == 0 )
 			return;
 
-		var stdin = string.Join("\0", paths);
-		var args = new[] { "checkout-index", "-f", "-u", "-q", "--stdin", "-z" };
+		var stdin = BuildCheckoutIndexStdin(paths);
+		var args = GetCheckoutIndexArgs();
 
 		await Core.GitAsync(
 			args,
@@ -45,5 +45,17 @@ public static class CheckoutIndex {
 			SuccessExitCodes,
 			stdin
 		).ConfigureAwait(false);
+	}
+
+	/// <summary>Builds git arguments for checkout-index. Exposed for testing.</summary>
+	public static string[] GetCheckoutIndexArgs() {
+		return new[] { "checkout-index", "-f", "-u", "-q", "--stdin", "-z" };
+	}
+
+	/// <summary>Builds stdin for checkout-index (null-separated paths). Exposed for testing.</summary>
+	public static string BuildCheckoutIndexStdin(IReadOnlyList<string> paths) {
+		if ( paths == null || paths.Count == 0 )
+			return string.Empty;
+		return string.Join("\0", paths);
 	}
 }

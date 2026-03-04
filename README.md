@@ -14,9 +14,15 @@ Included:
 
 ## Development
 
-I developed this using VSCode. Open the entire directory as a workspace. Included are a few VSCode tasks and a launch configuration to help you get started. Update run-sbox.js AND .vscode/tasks.json to point to your sbox-dev.exe path (usually in your Steam directory).
+I developed this using VSCode/Cursor.
+
+Open the project as a workspace. Included are a few VSCode tasks and a launch configuration to help you get started. Update run-sbox.js AND .vscode/tasks.json to point to your sbox-dev.exe path (usually in your Steam directory).
 
 Then run the "build and run" task to build the project and run it in S&box. You should be able to press F5 to build and run the project.
+
+## Tests
+
+Run tests with `dotnet test UnitTests/sandgit.unittest.csproj`.
 
 # Acknowledgments
 

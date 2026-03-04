@@ -33,7 +33,7 @@ public static class ForEachRef {
 
 		// Format: fullName, shortName, upstreamShortName, sha, symRef (null-byte separated; one line per ref)
 		var format = "%(refname)%00%(refname:short)%00%(upstream:short)%00%(objectname)%00%(symref)";
-		var args = BuildForEachRefArgs(format, prefixes);
+		var args = GetForEachRefArgs(format, prefixes);
 
 		var result = await Core.GitAsync(
 			args,
@@ -82,7 +82,7 @@ public static class ForEachRef {
 		// Format: fullName, sha, upstream, symref, head
 		var format = "%(refname)%00%(objectname)%00%(upstream)%00%(symref)%00%(HEAD)";
 		var prefixes = new[] { "refs/heads", "refs/remotes" };
-		var args = BuildForEachRefArgs(format, prefixes);
+		var args = GetForEachRefArgs(format, prefixes);
 
 		var result = await Core.GitAsync(
 			args,
@@ -134,7 +134,12 @@ public static class ForEachRef {
 		return eligible;
 	}
 
-	static string[] BuildForEachRefArgs(string format, string[] prefixes) {
+	/// <summary>Builds git arguments for for-each-ref. Exposed for testing.</summary>
+	public static string[] GetForEachRefArgs(string format, string[] prefixes) {
+		if ( format == null )
+			throw new ArgumentNullException(nameof(format));
+		if ( prefixes == null || prefixes.Length == 0 )
+			throw new ArgumentException("At least one prefix is required.", nameof(prefixes));
 		var list = new List<string> { "for-each-ref", $"--format={format}" };
 		list.AddRange(prefixes);
 		return list.ToArray();

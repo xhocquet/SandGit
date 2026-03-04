@@ -1,12 +1,12 @@
-public class CubeFloatAttribute : System.Attribute { }
+using Sandbox;
 
-public sealed class CubeController : Component
-{
-	[Property, CubeFloat]
-	public float MoveSpeed { get; set; } = 100.0f;
+public class CubeFloatAttribute : System.Attribute {
+}
 
-	protected override void OnUpdate()
-	{
+public sealed class CubeController : Component {
+	[Property, CubeFloat] public float MoveSpeed { get; set; } = 100.0f;
+
+	protected override void OnUpdate() {
 		// get the current rotation as pitch yaw roll angles
 		var angles = WorldRotation.Angles();
 

@@ -19,10 +19,17 @@ public static class InitRepository {
 	public static async Task InitGitRepositoryAsync(string path) {
 		var defaultBranch = await GetDefaultBranchAsync().ConfigureAwait(false);
 		await Core.GitAsync(
-			new[] { "-c", $"init.defaultBranch={defaultBranch}", "init" },
+			GetInitArgs(defaultBranch),
 			path,
 			OperationInitGitRepository
 		).ConfigureAwait(false);
+	}
+
+	/// <summary>Builds git arguments for init with a given default branch. Exposed for testing.</summary>
+	public static string[] GetInitArgs(string defaultBranch) {
+		if ( string.IsNullOrEmpty(defaultBranch) )
+			throw new ArgumentException("Default branch is required.", nameof(defaultBranch));
+		return new[] { "-c", $"init.defaultBranch={defaultBranch}", "init" };
 	}
 
 	/// <summary>
@@ -30,7 +37,7 @@ public static class InitRepository {
 	/// </summary>
 	public static async Task<string> GetDefaultBranchAsync() {
 		var result = await Core.GitAsync(
-			new[] { "config", "--global", "init.defaultBranch" },
+			GetDefaultBranchConfigArgs(),
 			Environment.CurrentDirectory,
 			OperationGetDefaultBranch,
 			SuccessExitCodesConfig
@@ -42,5 +49,10 @@ public static class InitRepository {
 		}
 
 		return "main";
+	}
+
+	/// <summary>Builds git arguments for reading init.defaultBranch config. Exposed for testing.</summary>
+	public static string[] GetDefaultBranchConfigArgs() {
+		return new[] { "config", "--global", "init.defaultBranch" };
 	}
 }

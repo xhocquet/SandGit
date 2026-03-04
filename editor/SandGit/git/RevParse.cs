@@ -27,7 +27,7 @@ public static class RevParse {
 
 		try {
 			var result = await Core.GitAsync(
-				new[] { "rev-parse", "--is-bare-repository", "--show-cdup" },
+				GetRepositoryTypeArgs(),
 				path,
 				OperationGetRepositoryType,
 				SuccessExitCodesRevParse
@@ -68,9 +68,9 @@ public static class RevParse {
 	/// Resolves the upstream ref for the given ref (e.g. "refs/remotes/origin/main"). Returns null if no upstream.
 	/// </summary>
 	public static async Task<string> GetUpstreamRefForRefAsync(string path, string refName = null) {
-		var rev = (refName ?? string.Empty) + "@{upstream}";
+		var args = GetUpstreamRefForRefArgs(refName);
 		var result = await Core.GitAsync(
-			new[] { "rev-parse", "--symbolic-full-name", rev },
+			args,
 			path,
 			OperationGetUpstreamRefForRef,
 			SuccessExitCodesRevParse
@@ -110,7 +110,7 @@ public static class RevParse {
 			return null;
 
 		var result = await Core.GitAsync(
-			new[] { "rev-parse", "--abbrev-ref", "HEAD" },
+			GetCurrentBranchNameArgs(),
 			path,
 			"getCurrentBranch",
 			SuccessExitCodesRevParse
@@ -121,5 +121,21 @@ public static class RevParse {
 
 		var name = result.Stdout.Trim();
 		return string.IsNullOrEmpty(name) ? null : name;
+	}
+
+	/// <summary>Builds git arguments for repository type detection. Exposed for testing.</summary>
+	public static string[] GetRepositoryTypeArgs() {
+		return new[] { "rev-parse", "--is-bare-repository", "--show-cdup" };
+	}
+
+	/// <summary>Builds git arguments for resolving upstream ref. Exposed for testing.</summary>
+	public static string[] GetUpstreamRefForRefArgs(string refName = null) {
+		var rev = (refName ?? string.Empty) + "@{upstream}";
+		return new[] { "rev-parse", "--symbolic-full-name", rev };
+	}
+
+	/// <summary>Builds git arguments for current branch name. Exposed for testing.</summary>
+	public static string[] GetCurrentBranchNameArgs() {
+		return new[] { "rev-parse", "--abbrev-ref", "HEAD" };
 	}
 }

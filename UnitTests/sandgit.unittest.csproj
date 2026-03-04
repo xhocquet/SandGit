@@ -2,24 +2,29 @@
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<AssemblyName>sandgit.editor</AssemblyName>
-		<PackageId>sandgit.editor</PackageId>
+		<AssemblyName>sandgit.unittest</AssemblyName>
+		<PackageId>sandgit.unittest</PackageId>
 		<LangVersion>14</LangVersion>
 		<NoWarn>1701;1702;1591;</NoWarn>
 		<WarningsAsErrors></WarningsAsErrors>
 		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DefineConstants>SANDBOX</DefineConstants>
-		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 		<OutputPath>B:/Games/Steam/steamapps/common/sbox/.vs/output/</OutputPath>
-		<DocumentationFile>B:/Games/Steam/steamapps/common/sbox/.vs/output/sandgit.editor.xml</DocumentationFile>
+		<DocumentationFile>B:/Games/Steam/steamapps/common/sbox/.vs/output/sandgit.unittest.xml</DocumentationFile>
 		<RootNamespace>Sandbox</RootNamespace>
 		<Nullable>disable</Nullable>
-		<DefaultItemExcludes>$(DefaultItemExcludes);**/obj/**;**/bin/**</DefaultItemExcludes>
+		<IsTestProject>true</IsTestProject>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" /> 
+		<PackageReference Include="MSTest.TestAdapter" Version="3.1.1" /> 
+		<PackageReference Include="MSTest.TestFramework" Version="3.1.1" /> 
+		<PackageReference Include="coverlet.collector" Version="6.0.0" /> 
+	</ItemGroup>
 
 	<ItemGroup>
 		<Using Include="Sandbox.Internal.GlobalToolsNamespace" Static="true" />
@@ -40,16 +45,12 @@
 		<Reference Include="B:/Games/Steam/steamapps/common/sbox/bin/managed/Microsoft.CodeAnalysis.dll"/> 
 		<Reference Include="B:/Games/Steam/steamapps/common/sbox/bin/managed/Microsoft.CodeAnalysis.CSharp.dll"/> 
 		<Reference Include="B:/Games/Steam/steamapps/common/sbox/bin/managed/Sandbox.Bind.dll"/> 
-		<Reference Include="B:/Games/Steam/steamapps/common/sbox/bin/managed/Facepunch.ActionGraphs.dll"/> 
-		<Reference Include="B:/Games/Steam/steamapps/common/sbox/bin/managed/SkiaSharp.dll"/> 
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="B:/Games/Steam/steamapps/common/sbox/editor/ActionGraph/Code/actiongraph.csproj" />
-		<ProjectReference Include="B:/Games/Steam/steamapps/common/sbox/editor/Hammer/Code/hammer.csproj" />
 		<ProjectReference Include="B:/Games/Steam/steamapps/common/sbox/addons/tools/Code/Base Editor Library.csproj" />
 		<ProjectReference Include="../code/sandgit.csproj" />
-		<ProjectReference Include="B:/Games/Steam/steamapps/common/sbox/editor/ShaderGraph/Code/shadergraph.csproj" />
+		<ProjectReference Include="../editor/sandgit.editor.csproj" />
 	</ItemGroup>
 
 </Project>

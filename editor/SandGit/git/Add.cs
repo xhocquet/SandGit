@@ -29,7 +29,16 @@ public static class Add {
 		if ( string.IsNullOrEmpty(file.Path) )
 			throw new ArgumentException("File path is required.", nameof(file));
 
-		var args = new[] { "add", "--", file.Path };
+		var args = GetAddConflictedFileArgs(file.Path);
 		_ = await Core.GitAsync(args, repository.Path, OperationAddConflictedFile).ConfigureAwait(false);
+	}
+
+	/// <summary>
+	/// Builds the git arguments for adding a conflicted file. Exposed for testing to lock down the command.
+	/// </summary>
+	public static string[] GetAddConflictedFileArgs(string filePath) {
+		if ( string.IsNullOrEmpty(filePath) )
+			throw new ArgumentException("File path is required.", nameof(filePath));
+		return new[] { "add", "--", filePath };
 	}
 }

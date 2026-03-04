@@ -29,7 +29,12 @@ public class Repository {
 	public string Path => _mainWorkTree.Path;
 
 	/// <param name="path">The working directory of this repository.</param>
+	/// <param name="id">Repository identifier.</param>
+	/// <param name="gitHubRepository">Associated GitHub repository, if any.</param>
 	/// <param name="missing">Was the repository missing on disk last we checked?</param>
+	/// <param name="alias">Display alias for the repository.</param>
+	/// <param name="workflowPreferences">Workflow preferences; defaults to <see cref="WorkflowPreferences.Default"/> if null.</param>
+	/// <param name="isTutorialRepository">True if this is a tutorial repository (e.g. from onboarding).</param>
 	public Repository(
 		string path,
 		int id,

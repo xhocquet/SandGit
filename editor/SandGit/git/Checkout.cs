@@ -48,7 +48,7 @@ public static class Checkout {
 		if ( string.IsNullOrEmpty(commit.Sha) )
 			throw new ArgumentException("Commit SHA is required.", nameof(commit));
 
-		var args = new[] { "checkout", commit.Sha };
+		var args = GetCheckoutCommitArgs(commit.Sha);
 		await Core.GitAsync(args, repository.Path, OperationCheckoutCommit).ConfigureAwait(false);
 	}
 
@@ -66,9 +66,7 @@ public static class Checkout {
 		if ( paths.Count == 0 )
 			return;
 
-		var args = new[] { "checkout", "HEAD", "--" }
-			.Concat(paths)
-			.ToArray();
+		var args = GetCheckoutPathsArgs(paths);
 		await Core.GitAsync(args, repository.Path, OperationCheckoutPaths).ConfigureAwait(false);
 	}
 
@@ -89,20 +87,42 @@ public static class Checkout {
 		if ( string.IsNullOrEmpty(file.Path) )
 			throw new ArgumentException("File path is required.", nameof(file));
 
-		var resolutionFlag = resolution == ManualConflictResolution.Ours ? "--ours" : "--theirs";
-		var args = new[] { "checkout", resolutionFlag, "--", file.Path };
+		var args = GetCheckoutConflictedFileArgs(file.Path, resolution);
 		await Core.GitAsync(args, repository.Path, OperationCheckoutConflictedFile).ConfigureAwait(false);
 	}
 
-	// ─── Private helpers ────────────────────────────────────────────────────
+	// ─── Args (exposed for testing) ──────────────────────────────────────────
 
-	static string[] GetBranchCheckoutArgs(models.Branch branch) {
-		if ( branch.Type == BranchType.Remote ) {
-			// Create local branch from remote: checkout -b <nameWithoutRemote> <name> --
+	/// <summary>Builds git arguments for checking out a branch. Exposed for testing.</summary>
+	public static string[] GetBranchCheckoutArgs(models.Branch branch) {
+		if ( branch == null )
+			throw new ArgumentNullException(nameof(branch));
+		if ( branch.Type == BranchType.Remote )
 			return new[] { "checkout", "-b", branch.NameWithoutRemote, branch.Name, "--" };
-		}
-
-		// Local branch: checkout <name> --
 		return new[] { "checkout", branch.Name, "--" };
+	}
+
+	/// <summary>Builds git arguments for checking out a commit. Exposed for testing.</summary>
+	public static string[] GetCheckoutCommitArgs(string sha) {
+		if ( string.IsNullOrEmpty(sha) )
+			throw new ArgumentException("Commit SHA is required.", nameof(sha));
+		return new[] { "checkout", sha };
+	}
+
+	/// <summary>Builds git arguments for checking out paths at HEAD. Exposed for testing.</summary>
+	public static string[] GetCheckoutPathsArgs(IReadOnlyList<string> paths) {
+		if ( paths == null )
+			throw new ArgumentNullException(nameof(paths));
+		if ( paths.Count == 0 )
+			return Array.Empty<string>();
+		return new[] { "checkout", "HEAD", "--" }.Concat(paths).ToArray();
+	}
+
+	/// <summary>Builds git arguments for checking out ours/theirs on a conflicted file. Exposed for testing.</summary>
+	public static string[] GetCheckoutConflictedFileArgs(string filePath, ManualConflictResolution resolution) {
+		if ( string.IsNullOrEmpty(filePath) )
+			throw new ArgumentException("File path is required.", nameof(filePath));
+		var flag = resolution == ManualConflictResolution.Ours ? "--ours" : "--theirs";
+		return new[] { "checkout", flag, "--", filePath };
 	}
 }

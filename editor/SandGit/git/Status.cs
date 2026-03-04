@@ -48,7 +48,7 @@ public static class Status {
 			throw new ArgumentNullException(nameof(repository));
 
 		var result = await Core.GitAsync(
-			new[] { "status", "--branch", "--porcelain=2" },
+			GetStatusArgs(),
 			repository.Path,
 			OperationGetStatus,
 			SuccessExitCodesStatus
@@ -68,7 +68,7 @@ public static class Status {
 			return null;
 
 		var result = await Core.GitAsync(
-			new[] { "status", "--branch", "--porcelain=2" },
+			GetStatusArgs(),
 			path,
 			OperationGetStatus,
 			SuccessExitCodesStatus
@@ -89,7 +89,7 @@ public static class Status {
 			return null;
 
 		var result = await Core.GitAsync(
-			new[] { "--no-optional-locks", "status", "--untracked-files=all", "--branch", "--porcelain=2", "-z" },
+			GetFullStatusArgs(),
 			path,
 			OperationGetFullStatus,
 			SuccessExitCodesStatus
@@ -99,6 +99,16 @@ public static class Status {
 			return null;
 
 		return ParseFullStatusOutput(result.Stdout);
+	}
+
+	/// <summary>Builds git arguments for status (branch + porcelain=2). Exposed for testing.</summary>
+	public static string[] GetStatusArgs() {
+		return new[] { "status", "--branch", "--porcelain=2" };
+	}
+
+	/// <summary>Builds git arguments for full status (with untracked, -z). Exposed for testing.</summary>
+	public static string[] GetFullStatusArgs() {
+		return new[] { "--no-optional-locks", "status", "--untracked-files=all", "--branch", "--porcelain=2", "-z" };
 	}
 
 	static FullStatusResult ParseFullStatusOutput(string stdout) {
