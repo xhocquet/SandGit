@@ -13,7 +13,6 @@
 !*.cs
 !*.razor
 
-
 # Sandbox source files
 !*.scene
 !*.prefab
@@ -23,6 +22,7 @@
 !*.sndscape
 !*.surface
 !*.vtex
+!.sbproj
 
 # Shader files
 !*.shader
@@ -40,6 +40,8 @@
 !.editorconfig
 !.yaml
 !.yml
+!README
+!LICENSE
 
 # Script files
 !*.bat
