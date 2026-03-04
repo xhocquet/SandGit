@@ -24,6 +24,8 @@ Then run the "build and run" task to build the project and run it in S&box. You 
 
 Run tests with `dotnet test UnitTests/sandgit.unittest.csproj`.
 
+IMPORTANT: Delete AssemblyInfo.cs in editor/SandGit/ and editor/Properties/ after running tests to be able to build the editor.
+
 # Acknowledgments
 
 This project is heavily based on the [Github Desktop](https://github.com/desktop/desktop) codebase.

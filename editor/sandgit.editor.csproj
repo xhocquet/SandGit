@@ -2,8 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyName>sandgit.editor</AssemblyName>
 		<PackageId>sandgit.editor</PackageId>
@@ -18,7 +16,6 @@
 		<DocumentationFile>B:/Games/Steam/steamapps/common/sbox/.vs/output/sandgit.editor.xml</DocumentationFile>
 		<RootNamespace>Sandbox</RootNamespace>
 		<Nullable>disable</Nullable>
-		<DefaultItemExcludes>$(DefaultItemExcludes);**/obj/**;**/bin/**</DefaultItemExcludes>
 	</PropertyGroup>
 
 	<ItemGroup>
