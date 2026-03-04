@@ -1,0 +1,75 @@
+# Ignore all files by default
+*
+!*/
+
+# Git
+!.gitignore
+!.gitattributes
+!.github/workflows/**
+
+# Source files
+!*.sln
+!*.csproj
+!*.cs
+!*.razor
+
+
+# Sandbox source files
+!*.scene
+!*.prefab
+!*.clothing
+!*.sound
+!*.decal
+!*.sndscape
+!*.surface
+!*.vtex
+
+# Shader files
+!*.shader
+!*.fxc
+!*.hlsl
+!*.hlsli
+
+# Text files
+!*.txt
+!*.md
+!*.ini
+!*.cfg
+!*.json
+!*.css
+!.editorconfig
+!.yaml
+!.yml
+
+# Script files
+!*.bat
+!*.sh
+!*.py
+!*.js
+
+#
+# Build & IDE
+#
+.vs/
+.vscode/settings.json
+.intermediate/
+**/obj/
+**/bin/
+*.user
+**/launchSettings.json
+packages/
+
+#
+# s&box local / generated
+#
+.sbox/project.json
+*.codegen
+.generated
+
+#
+# Scratch / local
+#
+*#local.json
+Untitled
+
+*.cache

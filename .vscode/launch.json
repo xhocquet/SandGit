@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "sbox: Run Game (sbox-dev)",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/.vscode/run-sbox.js",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "sbox: Run Game (no build)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/.vscode/run-sbox.js",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    }
+  ]
+}
