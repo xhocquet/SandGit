@@ -4,6 +4,8 @@ Use source control! You'll thank me later.
 
 This is an Editor Widget for [S&box](https://sbox.game/) which allows you to manage git operations in your project.
 
+[s&box Marketplace Link](https://sbox.game/meesles/sandgit)
+
 <img src="https://github.com/user-attachments/assets/b0974af1-7ede-4cf6-b219-684e1653333d" width="300" />
 
 ## Shortcuts
